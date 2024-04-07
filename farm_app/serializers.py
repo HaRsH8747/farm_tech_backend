@@ -104,7 +104,7 @@ class LandApplicationSerializers(serializers.ModelSerializer):
 class LandAgreementSerializers(serializers.ModelSerializer):
     landowner_name = serializers.ReadOnlyField(source = 'extendeduser.user.username')
     farmer_name = serializers.ReadOnlyField(source = 'extendeduser.user.username')
-    farmer_interested_to_produce_items = ProductSerializer(source='farmer_interested_to_produce', many=True)
+    farmer_interested_to_produce_items = ProductSerializer(source='farmer_interested_to_produce', many=True, read_only=True)
 
 
     def get_farmer_interested_to_produce_names(self, instance):
