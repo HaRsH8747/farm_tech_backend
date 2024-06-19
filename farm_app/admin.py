@@ -10,7 +10,6 @@ admin.site.register(FarmerDetail)
 class   LandAdmin(admin.ModelAdmin):
     list_display = ("extendeduser","street_address","city", "land_size")
 
-
 @admin.register(LandApplication)
 class   LandApplicationAdmin(admin.ModelAdmin):
     list_display = ("landowner", "farmer","landid" ,"application_date")
