@@ -22,18 +22,21 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
-
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(required=True, style={'input_type': 'password'})
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
 
 class ExtendedUserSerializers(serializers.ModelSerializer):
-    # extendeduser_name = serializers.SerializerMethodField()
+    user = UserSerializer()
     user_name = serializers.ReadOnlyField(source = 'user.username')
     class Meta:
         model = ExtendedUser
-        fields = ['id','user','user_name', 'designation', 'about_me']
+        fields = '__all__'
 
     # same thing
     # def get_extendeduser_name(self, obj):
@@ -103,16 +106,20 @@ class LandApplicationSerializers(serializers.ModelSerializer):
     farmer_name = serializers.ReadOnlyField(source = 'extendeduser.user.username')
     land_street_address = serializers.ReadOnlyField(source = 'land.street_address')
     farmer_interested_to_produce_items = ProductSerializer(source='farmer_interested_to_produce', many=True, read_only=True)
+    landowner_extended = ExtendedUserSerializers(source='landowner', read_only=True)
+    farmer_extended = ExtendedUserSerializers(source='farmer', read_only=True)
 
     class Meta:
         model = LandApplication
-        fields = ['id','landowner', 'landowner_name', 'farmer','farmer_name', 'landid', 'land_street_address', 'application_date','farmer_interested_to_produce_items', 'status']
+        fields = '__all__'
 
 
 class LandAgreementSerializers(serializers.ModelSerializer):
 
     landowner_name = serializers.SerializerMethodField()
     farmer_name = serializers.SerializerMethodField()
+    landowner_extended = ExtendedUserSerializers(source='landowner', read_only=True)
+    farmer_extended = ExtendedUserSerializers(source='farmer', read_only=True)
 
     class Meta:
         model = LandAgreement

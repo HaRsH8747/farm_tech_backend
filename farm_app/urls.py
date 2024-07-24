@@ -15,7 +15,6 @@ urlpatterns = [
     path('api/lands', views.LandLists.as_view()),
     path('api/lands/<int:pk>', views.LandRetrieveUpdateDestroy.as_view()),
     path('api/landapplications', views.LandApplicationLists.as_view()),
-    path('api/landapplications/<int:pk>', views.LandApplicationRetrieveUpdateDestroy.as_view()),
     path('api/landapplications/<int:pk>/status', views.LandApplicationStatusUpdateView.as_view(), name='update-landapplication-status'),
     path('api/landapplications/create', views.LandApplicationCreateView.as_view()),
     path('api/agreements', views.LandAgreementLists.as_view()),
