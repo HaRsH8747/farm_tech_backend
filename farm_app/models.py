@@ -346,9 +346,10 @@ class StorageApplications(models.Model):
     crop_name = models.CharField(max_length=100)
     weight = models.FloatField()
     area_needed = models.FloatField()
-    need_vehicle = models.BooleanField(default=False)
+    need_vehicle = models.BooleanField(default=False, blank=True)
     vehicle_type = models.CharField(max_length=100, blank=True, null=True)
     distance = models.FloatField(blank=True, null=True)
+    pickup_address = models.TextField(blank=True, null=True)
     pickup_date_time = models.DateTimeField(blank=True, null=True)
     total_cost = models.FloatField()
 

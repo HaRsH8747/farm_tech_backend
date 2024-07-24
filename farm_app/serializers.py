@@ -101,6 +101,11 @@ class LandSerializers(serializers.ModelSerializer):
         image_names = [image.photo.name for image in obj.land_image.all()]
         return image_names
 
+class LandDetailForApplicationSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Land
+        fields = '__all__'
+        
 class LandApplicationSerializers(serializers.ModelSerializer):
     landowner_name = serializers.ReadOnlyField(source = 'extendeduser.user.username')
     farmer_name = serializers.ReadOnlyField(source = 'extendeduser.user.username')
@@ -108,18 +113,19 @@ class LandApplicationSerializers(serializers.ModelSerializer):
     farmer_interested_to_produce_items = ProductSerializer(source='farmer_interested_to_produce', many=True, read_only=True)
     landowner_extended = ExtendedUserSerializers(source='landowner', read_only=True)
     farmer_extended = ExtendedUserSerializers(source='farmer', read_only=True)
-
+    land_detail = LandDetailForApplicationSerializers(source='landid', read_only=True)
+    
     class Meta:
         model = LandApplication
         fields = '__all__'
 
 
 class LandAgreementSerializers(serializers.ModelSerializer):
-
     landowner_name = serializers.SerializerMethodField()
     farmer_name = serializers.SerializerMethodField()
     landowner_extended = ExtendedUserSerializers(source='landowner', read_only=True)
     farmer_extended = ExtendedUserSerializers(source='farmer', read_only=True)
+    land_detail = LandDetailForApplicationSerializers(source='landid', read_only=True)
 
     class Meta:
         model = LandAgreement
