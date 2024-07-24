@@ -38,6 +38,7 @@ class StatusChoices(models.TextChoices):
     ACCEPTED = 'Accepted', _('Accepted')
     PENDING = 'Pending', _('Pending')
     REJECTED = 'Rejected', _('Rejected')
+
 class Storage(models.Model):
     name = models.CharField(max_length=255)
     latitude = models.FloatField()
@@ -79,7 +80,6 @@ class ExtendedUser(models.Model):
 
     def __str__(self):
         return self.user.username
-
 
 class ProductChoices(models.TextChoices):
     FIELD_CROPS = 'Field crops (grains or beans)', _('Field crops (grains or beans)')
@@ -196,8 +196,6 @@ class ExperienceNeededChoices(models.TextChoices):
     SIX_TO_TEN_YEARS = '6-10 years', _('6-10 years')
     NO_PREFERENCE = 'No preference', _('No preference')
 
-
-
 class ProductChoices(models.TextChoices):
     FIELD_CROPS = 'Field crops (grains or beans)', _('Field crops (grains or beans)')
     FLOWERS = 'Flowers', _('Flowers')
@@ -228,6 +226,7 @@ class StatusChoices(models.TextChoices):
     ACCEPTED = 'Accepted', _('Accepted')
     PENDING = 'Pending', _('Pending')
     REJECTED = 'Rejected', _('Rejected')
+
 class Storage(models.Model):
     name = models.CharField(max_length=255)
     latitude = models.FloatField()
@@ -307,17 +306,25 @@ class LandApplication(models.Model):
     farmer = models.ForeignKey(ExtendedUser, on_delete=models.CASCADE, related_name='land_applications_applied')
     landid = models.ForeignKey(Land, on_delete=models.CASCADE)
     application_date = models.DateField(auto_now_add=True)
-    farmer_interested_to_produce = models.ManyToManyField(Product)
     status = models.CharField(
         max_length=100,
         choices=StatusChoices.choices,
         default = StatusChoices.PENDING,
     )
+    facility_and_equipment_agreed_to = models.CharField(
+        max_length=100,
+        choices=FacilityAndEquipmentChoices.choices,
+    )
+    application_description = models.TextField(blank=True, null=True)
+    product_planning_to_produce = models.CharField(
+        max_length=100,
+        choices=ProductChoices.choices,
+        null=True
+    )
 
-    # def __str__(self):
-        # return self
 
 class LandAgreement(models.Model):
+    land_application = models.OneToOneField(LandApplication, on_delete=models.CASCADE, null=True)
     landowner = models.ForeignKey(ExtendedUser, on_delete=models.CASCADE, related_name='land_agreements_owned')
     farmer = models.ForeignKey(ExtendedUser, on_delete=models.CASCADE, related_name='land_agreements_signed')
     landid = models.ForeignKey(Land, on_delete=models.CASCADE)
@@ -330,4 +337,20 @@ class LandAgreement(models.Model):
     )
     agreement_description = models.TextField(blank=True, null=True)
 
+class StorageApplications(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone_number = models.CharField(max_length=15)
+    address = models.TextField()
+    crop_name = models.CharField(max_length=100)
+    weight = models.FloatField()
+    area_needed = models.FloatField()
+    need_vehicle = models.BooleanField(default=False)
+    vehicle_type = models.CharField(max_length=100, blank=True, null=True)
+    distance = models.FloatField(blank=True, null=True)
+    pickup_date_time = models.DateTimeField(blank=True, null=True)
+    total_cost = models.FloatField()
 
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.crop_name}"

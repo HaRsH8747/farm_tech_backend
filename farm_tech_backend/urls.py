@@ -21,6 +21,6 @@ from farm_app import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('farm_app.urls')),
-    path('',include('storage_app.urls')),
+    # path('',include('storage_app.urls')),
     # path('',include('recommendation_app.urls')),
 ]

@@ -25,21 +25,19 @@ SECRET_KEY = 'django-insecure-2ndg7i*vrk3tjk@i(@7ew^qq(ikgca_km&&@y(nd!ml52^j^k6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.2.18','127.0.0.1']
+ALLOWED_HOSTS = ['localhost','192.168.2.18','127.0.0.1','192.168.94.253','192.168.56.1','192.168.2.12', '192.168.45.253','192.168.45.138']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'farm_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'farm_app',
-    'recommendation_app',
-    'storage_app',
 
     # django rest framework
     'rest_framework',
@@ -53,7 +51,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -61,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 
 ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -71,6 +69,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3002",
     "http://192.168.2.18:3000",
     "http://192.168.2.18:3002",
+    "http://192.168.94.189:3000",
+    "http://192.168.56.1:3000",
+    "http://192.168.56.1:3000",
+    "http://192.168.2.12:3000",
+
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -101,8 +109,8 @@ WSGI_APPLICATION = 'farm_tech_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'farm_tech',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
         'USER': 'postgres',
         'PASSWORD': 'harsh',
         'HOST': 'localhost',

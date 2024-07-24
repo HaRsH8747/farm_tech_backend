@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ExtendedUser, FarmerDetail, Land, LandApplication, LandAgreement, Product, Image, Storage
+from .models import ExtendedUser, FarmerDetail, Land, LandApplication, LandAgreement, Product, Image, Storage, StatusChoices,StorageApplications
 from django.contrib.auth import get_user_model
 import base64
 from django.core.files.base import ContentFile
@@ -21,9 +21,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         )
         return user
 
+
+
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(required=True, style={'input_type': 'password'})
+
 
 class ExtendedUserSerializers(serializers.ModelSerializer):
     # extendeduser_name = serializers.SerializerMethodField()
@@ -77,10 +80,15 @@ class ImageSerializer(serializers.ModelSerializer):
 class LandSerializers(serializers.ModelSerializer):
     land_owner_name = serializers.SerializerMethodField()
     land_image_names = serializers.SerializerMethodField()
+    land_owner_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Land
         fields = '__all__'
+
+    def get_land_owner_id(self, obj):
+        user = User.objects.get(id=obj.extendeduser.user_id)
+        return obj.extendeduser.id
 
     def get_land_owner_name(self, obj):
         user = User.objects.get(id=obj.extendeduser.user.id)
@@ -102,13 +110,35 @@ class LandApplicationSerializers(serializers.ModelSerializer):
 
 
 class LandAgreementSerializers(serializers.ModelSerializer):
-    landowner_name = serializers.ReadOnlyField(source = 'extendeduser.user.username')
-    farmer_name = serializers.ReadOnlyField(source = 'extendeduser.user.username')
-    farmer_interested_to_produce_items = ProductSerializer(source='farmer_interested_to_produce', many=True, read_only=True)
 
+    landowner_name = serializers.SerializerMethodField()
+    farmer_name = serializers.SerializerMethodField()
 
-    def get_farmer_interested_to_produce_names(self, instance):
-        return ", ".join(str(product) for product in instance.farmer_interested_to_produce.all())
     class Meta:
         model = LandAgreement
-        fields = ['id','landowner', 'landowner_name', 'farmer','farmer_name', 'landid', 'agreement_duration', 'agreement_starting_date','farmer_interested_to_produce_items', 'facility_and_equipment_agreed_to', 'agreement_description']
+        fields = '__all__'
+
+    def get_landowner_name(self, obj):
+        return obj.landowner.user.username
+
+    def get_farmer_name(self, obj):
+        return obj.farmer.user.username
+
+    # def get_farmer_interested_to_produce_names(self, instance):
+    #     return ", ".join(str(product) for product in instance.farmer_interested_to_produce.all())
+
+
+class LandApplicationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LandApplication
+        fields = '__all__'
+
+class LandApplicationStatusUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LandApplication
+        fields = ['status']
+
+class StorageApplicationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StorageApplications
+        fields = '__all__'
